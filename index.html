@@ -16,7 +16,6 @@
   --display:'Bebas Neue',Impact,sans-serif; --body:'DM Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;overflow-x:hidden}
 a{color:inherit}
 canvas#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
@@ -37,8 +36,6 @@ nav ul a{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-tran
 nav ul a:hover{color:var(--accent)}
 .menu-toggle{display:none}
 .mobile-nav-backdrop{display:none}
-.progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:30}
-
 /* hero */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 5vw 80px}
 .hero .eyebrow{margin-bottom:18px}
@@ -180,7 +177,7 @@ nav .logo svg{width:34px;height:auto}
 
 /* ===== background animation layers ===== */
 .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.aurora i{position:absolute;width:55vmax;height:55vmax;border-radius:50%;filter:blur(90px);opacity:.28;mix-blend-mode:screen;will-change:transform}
+.aurora i{position:absolute;width:42vmax;height:42vmax;border-radius:50%;filter:blur(70px);opacity:.28;mix-blend-mode:screen;will-change:transform}
 .aurora i:nth-child(1){background:hsl(var(--h1,195) 100% 55%);left:-15vmax;top:-10vmax;animation:dr1 26s ease-in-out infinite alternate}
 .aurora i:nth-child(2){background:hsl(var(--h2,265) 90% 60%);right:-18vmax;top:25vh;animation:dr2 32s ease-in-out infinite alternate}
 .aurora i:nth-child(3){background:hsl(var(--h3,350) 90% 58%);left:20vw;bottom:-28vmax;opacity:.2;animation:dr3 38s ease-in-out infinite alternate}
@@ -191,11 +188,10 @@ nav .logo svg{width:34px;height:auto}
   background-image:linear-gradient(rgba(77,225,255,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(77,225,255,.22) 1px,transparent 1px);
   background-size:70px 70px;transform:perspective(500px) rotateX(62deg);transform-origin:center bottom;
   -webkit-mask-image:linear-gradient(transparent,#000 85%);mask-image:linear-gradient(transparent,#000 85%);
-  opacity:.35;animation:gridmove 4s linear infinite}
-@keyframes gridmove{to{background-position:0 70px}}
+  opacity:.35}
 .spot{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(420px circle at var(--sx,50%) var(--sy,40%),rgba(77,225,255,.09),transparent 60%)}
-.scan{position:fixed;left:0;right:0;height:140px;z-index:1;pointer-events:none;background:linear-gradient(transparent,rgba(77,225,255,.035),transparent);animation:scan 9s linear infinite}
-@keyframes scan{from{top:-140px}to{top:100vh}}
+.scan{position:fixed;top:0;left:0;right:0;height:140px;z-index:1;pointer-events:none;background:linear-gradient(transparent,rgba(77,225,255,.035),transparent);transform:translateY(-140px);will-change:transform;animation:scan 9s linear infinite}
+@keyframes scan{to{transform:translateY(100vh)}}
 .sec-head h2,.gl-side h2,.register h2{background-size:200% auto}
 section{position:relative}
 section::before{content:"";position:absolute;left:5vw;right:5vw;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);transform:scaleX(0);transition:transform 1.4s cubic-bezier(.2,.7,.2,1)}
@@ -363,87 +359,9 @@ footer p.mono a:hover{opacity:.8;text-decoration:underline}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
 
-/* ── hide native cursor ─────────────────────────────────────── */
-html,body,*{cursor:none!important}
-@media(hover:none),(pointer:coarse){
-  html,body,*{cursor:auto!important}
-  .cur-dot,.cur-ring{display:none!important}
-}
-
-/* ── shared base ────────────────────────────────────────────── */
-.cur-dot,
-.cur-ring{
-  position:fixed;
-  top:0;left:0;
-  pointer-events:none;
-  z-index:9999;
-  will-change:transform;
-  /* start invisible; JS adds --visible on first move */
-  opacity:0;
-}
-
-/* ── inner dot ──────────────────────────────────────────────── */
-.cur-dot{
-  width:6px;height:6px;
-  border-radius:50%;
-  background:#4de1ff;
-  margin-top:-3px;margin-left:-3px;  /* centre hotspot */
-  box-shadow:0 0 6px rgba(77,225,255,.9),
-             0 0 14px rgba(77,225,255,.4);
-  transition:opacity .25s, transform .1s;
-}
-.cur-dot--visible{opacity:1}
-.cur-dot--hidden{opacity:0;transform:scale(0)}
-
-/* ── outer ring ─────────────────────────────────────────────── */
-.cur-ring{
-  width:38px;height:38px;
-  border-radius:50%;
-  border:1.5px solid rgba(77,225,255,.65);
-  margin-top:-19px;margin-left:-19px; /* centre */
-  box-shadow:0 0 10px rgba(77,225,255,.15),
-             inset 0 0 10px rgba(77,225,255,.05);
-  /* size / color transitions handled by CSS — zero JS cost */
-  transition:
-    opacity    .3s,
-    width      .35s cubic-bezier(.2,.9,.3,1.2),
-    height     .35s cubic-bezier(.2,.9,.3,1.2),
-    margin     .35s cubic-bezier(.2,.9,.3,1.2),
-    background .25s,
-    border-color .25s,
-    transform  .2s cubic-bezier(.2,.9,.3,1.3);
-}
-.cur-ring--visible{opacity:1}
-
-/* hover over a link — ring expands + tints */
-.cur-ring--hover{
-  width:58px;height:58px;
-  margin-top:-29px;margin-left:-29px;
-  background:rgba(77,225,255,.08);
-  border-color:rgba(77,225,255,.9);
-  box-shadow:0 0 18px rgba(77,225,255,.25),
-             inset 0 0 14px rgba(77,225,255,.08);
-}
-
-/* hover over text input — ring becomes a thin line */
-.cur-ring--text{
-  width:28px;height:28px;
-  margin-top:-14px;margin-left:-14px;
-  border-color:rgba(255,255,255,.5);
-  background:transparent;
-}
-
-/* mouse-down punch */
-.cur-ring--click{
-  transform:scale(0.72);
-  background:rgba(77,225,255,.18);
-  border-color:#4de1ff;
-}
-
 </style>
 </head>
 <body>
-<div class="progress" id="progress"></div>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="gridfloor" aria-hidden="true"></div>
 <canvas id="bg"></canvas>
@@ -497,8 +415,8 @@ html,body,*{cursor:none!important}
   <div class="sec-head reveal"><p class="mono">/ 01 — The festival</p><h2>One day.<br><em>Seven</em> arenas.</h2></div>
   <p class="reveal" style="max-width:720px;font-size:1.2rem;font-weight:300">Technovanza 12.0 is an inter-school computer festival held entirely offline. From futuristic news anchors to Capture-The-Flag cyber operations, every event is built around a real-world mission — pick the one that fits your class and take it on.</p>
   <div class="stats reveal">
-    <div><strong data-n="7">0</strong><span>Events in total</span></div>
-    <div><strong data-n="10">0</strong><span>Classes eligible (III–XII)</span></div>
+    <div><strong>7</strong><span>Events in total</span></div>
+    <div><strong>10</strong><span>Classes eligible (III–XII)</span></div>
     <div><strong>1</strong><span>Team per school, per event</span></div>
     <div><strong>6</strong><span>Events needed for the Overall Trophy</span></div>
   </div>
@@ -812,7 +730,7 @@ const lt=setInterval(()=>{
   }
 },24);
 
-// emblem: mouse tilt + scroll parallax
+// emblem: pointer tilt
 (()=>{
   const hero = $('#emblem');
   if(!hero) return;
@@ -821,9 +739,7 @@ const lt=setInterval(()=>{
   addEventListener('pointermove',e=>{tx=(e.clientX/innerWidth-.5)*2;ty=(e.clientY/innerHeight-.5)*2});
   (function loop(){
     cx+=(tx-cx)*.08;cy+=(ty-cy)*.08;
-    const s=Math.min(scrollY/innerHeight,1);
-    target.style.transform=`perspective(900px) rotateY(${cx*14}deg) rotateX(${-cy*10}deg) translateY(${s*80}px) scale(${1-s*.25})`;
-    target.style.opacity=1-s*.9;
+    target.style.transform=`perspective(900px) rotateY(${cx*14}deg) rotateX(${-cy*10}deg)`;
     requestAnimationFrame(loop);
   })();
 })();
@@ -907,14 +823,12 @@ addEventListener('keydown',e=>{
 
 renderFilters();renderGrid();
 
-// reveal + counters
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);
-  e.target.querySelectorAll?.('[data-n]').forEach(c=>{const t=+c.dataset.n;let n=0;const id=setInterval(()=>{n++;c.textContent=n;if(n>=t)clearInterval(id)},900/t)})}}),{threshold:.15});
+// reveal on entry
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-// ── nav glass on scroll ───────────────────────────────────────────
 const navEl=document.querySelector('nav');
 const navToggle=$('.menu-toggle'),navLinks=$('#primary-navigation'),navBackdrop=$('#mobileNavBackdrop');
-const mobileView=matchMedia('(max-width:760px)');
+const mobileView=matchMedia('(max-width:840px)');
 function setMobileMenu(open,restoreFocus=false){
   navEl.classList.toggle('menu-open',open);
   navToggle.setAttribute('aria-expanded',String(open));
@@ -939,35 +853,7 @@ navEl.addEventListener('keydown',e=>{
 mobileView.addEventListener('change',e=>{if(!e.matches)setMobileMenu(false)});
 function updateNav(){navEl.classList.toggle('scrolled',scrollY>60)}
 updateNav();
-addEventListener('scroll',()=>{
-  const h=document.documentElement;
-  $('#progress').style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
-  updateNav();
-},{passive:true});
-
-// ── smooth inertia scroll ─────────────────────────────────────────
-(()=>{
-  if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  if(!matchMedia('(hover:hover) and (pointer:fine)').matches)return;
-  let scrollCur=scrollY,scrollTarget=scrollY,animId=null;
-  const EASE=0.09;
-  window.addEventListener('wheel',e=>{
-    // don't intercept when modal is open — let modal scroll naturally
-    if($('#modal').classList.contains('open'))return;
-    e.preventDefault();
-    const delta=e.deltaMode===1?e.deltaY*33:e.deltaMode===2?e.deltaY*innerHeight:e.deltaY;
-    scrollTarget+=delta;
-    scrollTarget=Math.max(0,Math.min(scrollTarget,document.body.scrollHeight-innerHeight));
-    if(!animId)animId=requestAnimationFrame(scrollTick);
-  },{passive:false});
-  function scrollTick(){
-    scrollCur+=(scrollTarget-scrollCur)*EASE;
-    window.scrollTo(0,scrollCur);
-    animId=Math.abs(scrollTarget-scrollCur)>0.4?requestAnimationFrame(scrollTick):null;
-  }
-  window.addEventListener('scroll',()=>{if(!animId){scrollTarget=scrollY;scrollCur=scrollY;}},{passive:true});
-})();
-
+addEventListener('scroll',updateNav,{passive:true});
 // ── magnetic buttons ─────────────────────────────────────────────
 // Uses document-level pointermove so the pull starts BEFORE cursor
 // enters the element (otherwise it only fires when already inside).
@@ -996,23 +882,22 @@ addEventListener('scroll',()=>{
   },{ passive:true });
 })();
 
-// background: drifting particle network, parallax with scroll
+// background: drifting particle network
 (()=>{
   const cv=$('#bg'),ctx=cv.getContext('2d');let W,H,P=[],mx=.5,my=.5;
-  const dpr=Math.min(devicePixelRatio||1,2);
-  function size(){W=cv.width=innerWidth*dpr;H=cv.height=innerHeight*dpr;P=Array.from({length:Math.round(innerWidth*innerHeight/14000)},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random()*.9+.1,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15}))}
+  const dpr=Math.min(devicePixelRatio||1,1.5);
+  function size(){W=cv.width=innerWidth*dpr;H=cv.height=innerHeight*dpr;P=Array.from({length:Math.min(90,Math.max(18,Math.round(innerWidth*innerHeight/30000)))},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random()*.9+.1,vx:(Math.random()-.5)*.15,vy:(Math.random()-.5)*.15}))}
   size();addEventListener('resize',size);
   addEventListener('pointermove',e=>{mx=e.clientX/innerWidth;my=e.clientY/innerHeight});
   const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
   function frame(){
     ctx.clearRect(0,0,W,H);
-    const sy=scrollY*dpr;
-    const g=ctx.createRadialGradient(W*.5,H*(.2+.3*Math.sin(scrollY/1500)),0,W*.5,H*.4,W*.7);
+    const g=ctx.createRadialGradient(W*.5,H*.35,0,W*.5,H*.4,W*.7);
     g.addColorStop(0,'rgba(77,225,255,.07)');g.addColorStop(.6,'rgba(160,107,255,.04)');g.addColorStop(1,'transparent');
     ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
     for(const p of P){
       if(!still){p.x+=p.vx;p.y+=p.vy}
-      const x=((p.x+(mx-.5)*60*p.z*dpr)%W+W)%W, y=(((p.y-sy*p.z*.35)+(my-.5)*40*p.z*dpr)%H+H)%H;
+      const x=((p.x+(mx-.5)*60*p.z*dpr)%W+W)%W, y=((p.y+(my-.5)*40*p.z*dpr)%H+H)%H;
       p.sx=x;p.sy=y;
       ctx.fillStyle=`rgba(209,214,227,${.15+p.z*.6})`;
       ctx.beginPath();ctx.arc(x,y,p.z*1.6*dpr,0,6.283);ctx.fill();
@@ -1031,11 +916,6 @@ addEventListener('scroll',()=>{
 (()=>{
   const spot=$('#spot');
   addEventListener('pointermove',e=>{spot.style.setProperty('--sx',e.clientX+'px');spot.style.setProperty('--sy',e.clientY+'px')});
-  // colour drift with scroll progress
-  const root=document.documentElement.style;
-  function hue(){const p=scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
-    root.setProperty('--h1',195+p*120);root.setProperty('--h2',265+p*140);root.setProperty('--h3',350-p*120)}
-  hue();addEventListener('scroll',hue,{passive:true});
   // section top-lines
   const so=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('seen')}),{threshold:.1});
   document.querySelectorAll('section').forEach(x=>so.observe(x));
@@ -1059,19 +939,19 @@ addEventListener('scroll',()=>{
 (()=>{
   const cv=document.createElement('canvas');cv.style.cssText='position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none';
   document.body.insertBefore(cv,$('#bg').nextSibling);
-  const ctx=cv.getContext('2d');let W,H,cols=[],stars=[];const dpr=Math.min(devicePixelRatio||1,2);
+  const ctx=cv.getContext('2d');let W,H,cols=[],stars=[];const dpr=Math.min(devicePixelRatio||1,1.5);
   function size(){W=cv.width=innerWidth*dpr;H=cv.height=innerHeight*dpr;
-    cols=Array.from({length:Math.floor(innerWidth/38)},(_,i)=>({x:i*38*dpr+10*dpr,y:Math.random()*H,v:(.6+Math.random()*1.4)*dpr,t:Math.random()<.5?'0':'1'}))}
+    cols=Array.from({length:Math.floor(innerWidth/52)},(_,i)=>({x:i*52*dpr+10*dpr,y:Math.random()*H,v:(.6+Math.random()*1.4)*dpr,t:Math.random()<.5?'0':'1'}))}
   size();addEventListener('resize',size);
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  setInterval(()=>{if(stars.length<3)stars.push({x:Math.random()*W*.9,y:Math.random()*H*.35,vx:(9+Math.random()*7)*dpr,vy:(4+Math.random()*4)*dpr,life:1})},2400);
+  setInterval(()=>{if(stars.length<3)stars.push({x:Math.random()*W*.9,y:Math.random()*H*.35,vx:(9+Math.random()*7)*dpr,vy:(4+Math.random()*4)*dpr,life:1})},3600);
   ctx.font=`${13*dpr}px JetBrains Mono, monospace`;
   (function frame(){
     ctx.clearRect(0,0,W,H);
     ctx.font=`${13*dpr}px JetBrains Mono, monospace`;
     for(const c of cols){
       c.y+=c.v;if(c.y>H+20){c.y=-20;c.x=Math.random()*W}
-      for(let k=0;k<9;k++){ctx.fillStyle=`rgba(77,225,255,${.1*(1-k/9)})`;ctx.fillText(Math.random()<.5?'0':'1',c.x,c.y-k*16*dpr)}
+      for(let k=0;k<7;k++){ctx.fillStyle=`rgba(77,225,255,${.1*(1-k/7)})`;ctx.fillText(Math.random()<.5?'0':'1',c.x,c.y-k*16*dpr)}
     }
     for(let i=stars.length-1;i>=0;i--){const s=stars[i];s.x+=s.vx;s.y+=s.vy;s.life-=.012;
       const g=ctx.createLinearGradient(s.x,s.y,s.x-s.vx*9,s.y-s.vy*9);g.addColorStop(0,`rgba(255,255,255,${s.life})`);g.addColorStop(1,'transparent');
@@ -1080,7 +960,5 @@ addEventListener('scroll',()=>{
     requestAnimationFrame(frame)})();
 })();
 </script>
-<!-- WebGL fluid cursor (separate file) -->
-<script src="cursor.js"></script>
 </body>
 </html>
