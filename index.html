@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#050509; --bg2:#0a0a12; --ink:#d1d6e3; --dim:#7d8397; --line:rgba(209,214,227,.12);
+  --bg:#050509; --bg2:#0a0a12; --ink:#d1d6e3; --dim:#c0ccf4; --line:rgba(209,214,227,.12);
   --accent:#4de1ff; --accent2:#a06bff; --hot:#ff5c8a;
   --display:'Bebas Neue',Impact,sans-serif; --body:'DM Sans',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
 }
@@ -27,6 +27,7 @@ main,header,footer{position:relative;z-index:2}
 /* nav */
 nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:18px 5vw;background:transparent;transition:background .4s,backdrop-filter .4s,box-shadow .4s,border-radius .4s,margin .4s,padding .4s}
 nav.scrolled{margin:10px 3vw;padding:14px 28px;border-radius:16px;background:rgba(5,5,9,.75);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);box-shadow:0 0 0 1px rgba(77,225,255,.1),0 8px 40px rgba(0,0,0,.5)}
+nav.menu-open.scrolled{backdrop-filter:none;-webkit-backdrop-filter:none;transition:background .4s,box-shadow .4s,border-radius .4s,margin .4s,padding .4s}
 nav .logo{font-family:var(--display);font-size:1.5rem;letter-spacing:.12em;text-decoration:none;display:flex;align-items:center;gap:10px}
 nav .logo b{color:var(--accent);font-weight:400}
 nav .logo #navmark{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0}
@@ -34,6 +35,8 @@ nav .logo #navmark img{display:block;width:100%;height:100%;object-fit:contain}
 nav ul{display:flex;gap:28px;list-style:none}
 nav ul a{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;color:var(--dim);transition:color .2s,transform .5s cubic-bezier(.2,.9,.3,1);display:inline-block}
 nav ul a:hover{color:var(--accent)}
+.menu-toggle{display:none}
+.mobile-nav-backdrop{display:none}
 .progress{position:fixed;top:0;left:0;height:2px;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:30}
 
 /* hero */
@@ -212,11 +215,60 @@ section.seen::before{transform:scaleX(1)}
 @keyframes mq{to{transform:translateX(-50%)}}
 
 /* register */
-.register{text-align:center;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+section.register{
+  padding:64px 5vw 36px;
+  text-align:center;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
 .register h2{font-family:var(--display);font-weight:400;font-size:clamp(3rem,9vw,8rem);line-height:.95}
-.register p{max-width:520px;margin:20px auto 0;color:var(--dim)}
-footer{padding:50px 5vw 40px;text-align:center}
+.register p{max-width:520px;margin:16px auto 0;color:var(--dim)}
+.register .cta{margin-top:24px}
+
+/* deadline callout badge */
+.deadline-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(255,92,138,.12);
+  border:1px solid rgba(255,92,138,.42);
+  color:#ff85a6;
+  padding:8px 20px;
+  border-radius:999px;
+  font-family:var(--mono);
+  font-size:.74rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  margin-bottom:18px;
+  box-shadow:0 0 28px rgba(255,92,138,.24);
+}
+.deadline-badge strong{color:#fff;font-weight:600}
+.keys div.key-deadline{
+  border-left:2px solid var(--hot);
+  background:rgba(255,92,138,.08);
+}
+.keys div.key-deadline b{
+  color:var(--hot);
+  text-shadow:0 0 16px rgba(255,92,138,.45);
+}
+
+footer{
+  position:relative;
+  z-index:2;
+  margin:24px 3vw 24px;
+  padding:40px 5vw 32px;
+  text-align:center;
+  border-radius:20px;
+  background:rgba(5,5,9,.78);
+  backdrop-filter:blur(24px) saturate(1.5);
+  -webkit-backdrop-filter:blur(24px) saturate(1.5);
+  border:1px solid rgba(77,225,255,.12);
+  box-shadow:0 0 0 1px rgba(77,225,255,.08), 0 12px 48px rgba(0,0,0,.5);
+}
 footer p{margin-top:8px}
+footer p.mono{color:var(--ink);opacity:.88}
+footer p.mono a{color:var(--accent);text-decoration:none;transition:opacity .2s}
+footer p.mono a:hover{opacity:.8;text-decoration:underline}
 
 /* contact / dev view */
 .contact-dev{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;justify-content:center;overflow-y:auto;max-width:none;margin:0;padding:80px 5vw;background:radial-gradient(ellipse at 12% 18%,rgba(77,225,255,.16),transparent 46%),radial-gradient(ellipse at 88% 74%,rgba(160,107,255,.14),transparent 48%),radial-gradient(ellipse at 55% 105%,rgba(255,92,138,.08),transparent 42%),linear-gradient(135deg,rgba(5,5,9,.93),rgba(10,10,18,.9));backdrop-filter:blur(18px);border:0;text-align:center;visibility:hidden;opacity:0;pointer-events:none;transform:scale(.99);transition:opacity .35s ease,transform .35s ease,visibility .35s}
@@ -237,7 +289,7 @@ footer p{margin-top:8px}
   background:rgba(10,10,18,.5);backdrop-filter:blur(8px);
   transition:color .25s,border-color .25s,box-shadow .25s,transform .25s}
 .dev-link:hover{color:var(--accent);border-color:var(--accent);box-shadow:0 0 22px rgba(77,225,255,.18);transform:translateY(-3px)}
-.dev-link svg{width:15px;height:15px;fill:currentColor;flex-shrink:0}
+.dev-link svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 @media(max-width:600px){.dev-people{grid-template-columns:minmax(0,320px)}}
 .developer-credit{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:18px;color:var(--dim);font-family:var(--mono);font-size:.68rem;letter-spacing:.08em}
 .developer-credit svg{width:15px;height:15px;flex:none;color:var(--accent)}
@@ -268,6 +320,8 @@ footer p{margin-top:8px}
 .sheet ul{list-style:none;display:grid;gap:10px}
 .sheet ul li{padding-left:26px;position:relative}
 .sheet ul li::before{content:"";position:absolute;left:0;top:.7em;width:12px;height:1px;background:var(--c)}
+.rule-groups{display:grid;gap:24px}
+.rule-group h5{font-family:var(--mono);font-size:.75rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--c);margin-bottom:10px}
 .crit{display:grid;gap:10px}
 .crit div{display:grid;grid-template-columns:1fr auto;gap:6px 16px;align-items:center}
 .crit .bar{grid-column:1/-1;height:3px;background:var(--line)}
@@ -281,9 +335,27 @@ footer p{margin-top:8px}
 .nav-ev button{background:none;border:1px solid var(--line);color:var(--ink);padding:12px 20px;font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
 .nav-ev button:hover{border-color:var(--c);color:var(--c)}
 
-@media(max-width:760px){
-  nav ul{display:none}
+@media(max-width:840px){
+  nav{padding:14px 5vw}
+  nav .logo{font-size:1.25rem;gap:7px}
+  nav .logo #navmark{width:34px;height:34px}
+  .menu-toggle{position:relative;z-index:24;display:grid;place-items:center;width:44px;height:44px;flex:none;border:1px solid var(--line);background:rgba(10,10,18,.72);color:var(--ink);cursor:pointer;transition:border-color .25s,color .25s,background .25s}
+  .menu-toggle:hover,.menu-toggle:focus-visible{border-color:var(--accent);color:var(--accent)}
+  .menu-toggle:focus-visible,nav ul a:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .menu-toggle svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+  .menu-toggle .menu-line{transform-origin:center;transition:transform .3s ease,opacity .2s ease}
+  .menu-toggle[aria-expanded="true"] .menu-line-top{transform:translateY(7px) rotate(45deg)}
+  .menu-toggle[aria-expanded="true"] .menu-line-middle{opacity:0}
+  .menu-toggle[aria-expanded="true"] .menu-line-bottom{transform:translateY(-7px) rotate(-45deg)}
+  nav ul{position:fixed;z-index:22;top:0;right:0;bottom:0;width:min(360px,86vw);overflow-y:auto;display:flex;flex-direction:column;gap:0;padding:104px 30px 32px;list-style:none;border-left:1px solid rgba(77,225,255,.22);background:radial-gradient(ellipse at 100% 0,rgba(77,225,255,.12),transparent 48%),rgba(5,5,9,.97);backdrop-filter:blur(24px);box-shadow:-24px 0 70px rgba(0,0,0,.5);transform:translateX(102%);visibility:hidden;pointer-events:none;transition:transform .38s cubic-bezier(.2,.8,.2,1),visibility .38s}
+  nav.menu-open ul{transform:translateX(0);visibility:visible;pointer-events:auto}
+  nav ul li{border-bottom:1px solid var(--line)}
+  nav ul a{display:block;padding:16px 4px;font-size:.82rem}
+  nav ul a:hover,nav ul a:focus-visible{color:var(--accent);transform:translateX(5px)}
+  .mobile-nav-backdrop{display:block;position:fixed;z-index:18;inset:0;width:100%;height:100%;border:0;background:rgba(0,0,0,.62);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease,visibility .35s}
+  .mobile-nav-backdrop.open{opacity:1;visibility:visible;pointer-events:auto}
   section{padding:80px 5vw}
+  footer{margin:30px 4vw 20px;padding:36px 4vw 28px;border-radius:16px}
   .gl{grid-template-columns:1fr}
   .gl-side{position:static}
   .gl-group{padding-left:22px}
@@ -390,7 +462,10 @@ html,body,*{cursor:none!important}
 
 <nav>
   <a class="logo" href="#top"><span id="navmark" data-clone-static><img src="logo.png" alt="Technovanza 12.0 logo"></span>TECHNOVANZA 12.0</a>
-  <ul>
+  <button class="menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="primary-navigation">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path class="menu-line menu-line-top" d="M4 5h16"/><path class="menu-line menu-line-middle" d="M4 12h16"/><path class="menu-line menu-line-bottom" d="M4 19h16"/></svg>
+  </button>
+  <ul id="primary-navigation" aria-label="Main navigation">
     <li><a href="#about">About</a></li>
     <li><a href="#events">Events</a></li>
     <li><a href="#glance">At a glance</a></li>
@@ -399,6 +474,7 @@ html,body,*{cursor:none!important}
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
+<button class="mobile-nav-backdrop" id="mobileNavBackdrop" type="button" aria-label="Close navigation menu" disabled></button>
 
 <header class="hero" id="top">
   <div class="emblem float" id="emblem"><img src="logo.png" alt="Technovanza 12.0 logo"></div>
@@ -449,22 +525,23 @@ html,body,*{cursor:none!important}
       <h2>General <em>guidelines</em></h2>
       <p class="lead">The ground rules every school and every team agrees to. Event-specific rules live inside each event.</p>
       <div class="keys">
-        <div><span class="mono">Last date</span><b>31 Oct 2026</b></div>
+        <div class="key-deadline"><span class="mono">Last date to Register</span><b>31 Oct 2026</b></div>
         <div><span class="mono">Reporting</span><b>8:00 AM</b></div>
         <div><span class="mono">Trophy needs</span><b>6+ events</b></div>
       </div>
-      <a class="cta" href="#register">Register now</a>
+      <a class="cta" href="https://forms.gle/q3xySiwbtn3Go7G38" target="_blank" rel="noopener">Register now</a>
     </aside>
     <div class="gl-main" id="glmain"></div>
   </div>
 </section>
 
 <section class="register" id="register">
-  <p class="mono reveal">Last date to register · 31 October 2026</p>
+  <div class="deadline-badge reveal">
+    Last date to register &middot; <strong>31 October 2026</strong>
+  </div>
   <h2 class="reveal">Claim your <span style="color:var(--accent)">seat</span></h2>
-  <p class="reveal">One common form for all events, filled once by the school. First-come, first-served — no on-the-spot registrations.</p>
-  <!-- TODO: replace # with the real registration form URL -->
-  <a class="cta reveal" id="regLink" href="https://bbpsgr.balbharati.org" target="_blank" rel="noopener">Register your school</a>
+  <p class="reveal">One common form for all events, filled once by the school.<br><b>No on-the-spot registrations.</b></p>
+  <a class="cta reveal" id="regLink" href="https://forms.gle/q3xySiwbtn3Go7G38" target="_blank" rel="noopener">Register your school</a>
 </section>
 
 </main>
@@ -473,24 +550,21 @@ html,body,*{cursor:none!important}
 <section class="contact-dev" id="contact" role="dialog" aria-modal="true" aria-labelledby="contactTitle">
   <a class="contact-close" href="#top" aria-label="Close contact">&times;</a>
   <p class="mono sec-label">&frasl; 06 &mdash; Site</p>
-  <h2 id="contactTitle">Want To Know <em>More?</em></h2>
+  <h2 id="contactTitle">Have Any <em>Doubts?</em></h2>
   <p class="sub">Don't hesitate, just reach out.</p>
   <div class="dev-people">
     <article class="dev-person">
       <h3>Arahant Kumar</h3>
       <div class="dev-links">
-        <!-- Replace PASTE_EMAIL_ADDRESS_HERE with Arahant's email address. -->
-        <a class="dev-link" href="mailto:514465@gr.balbharati.org">Email</a>
-        <!-- Replace PASTE_INSTAGRAM_USERNAME_HERE with Arahant's Instagram username. -->
-        <a class="dev-link" href="https://instagram.com/arahantkumar_" target="_blank" rel="noopener">Instagram</a>
+        <a class="dev-link" href="mailto:514465@gr.balbharati.org"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m4 7 8 6 8-6"/></svg>Email</a>
+        <a class="dev-link" href="https://wa.me/918595843221" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 11.6a8.2 8.2 0 0 1-12.1 7.2L3 20l1.3-4.8a8.2 8.2 0 1 1 15.9-3.6Z"/><path d="M8.4 8.3c.3-.6.6-.6 1-.6h.4c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.5.6c-.2.2-.2.4 0 .7.4.7 1.1 1.4 1.8 1.8.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.7-.1l1.6.8c.3.1.4.3.4.5 0 .3-.2 1.1-.7 1.5-.5.5-1.2.7-1.9.6-1-.1-2.2-.6-3.6-1.8-1.2-1.1-2-2.4-2.2-3.4-.2-1 .1-1.9.6-2.4Z"/></svg>WhatsApp</a>
       </div>
     </article>
     <article class="dev-person">
       <h3>Manan Agarwal</h3>
       <div class="dev-links">
-        <!-- Replace PASTE_EMAIL_ADDRESS_HERE with Manan's email address. -->
-        <a class="dev-link" href="mailto:517597@gr.balbharati.org">Email</a>
-        <a class="dev-link" href="https://instagram.com/mananag.1" target="_blank" rel="noopener">Instagram</a>
+        <a class="dev-link" href="mailto:517597@gr.balbharati.org"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="m4 7 8 6 8-6"/></svg>Email</a>
+        <a class="dev-link" href="https://wa.me/919289799346" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.2 11.6a8.2 8.2 0 0 1-12.1 7.2L3 20l1.3-4.8a8.2 8.2 0 1 1 15.9-3.6Z"/><path d="M8.4 8.3c.3-.6.6-.6 1-.6h.4c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.5.6c-.2.2-.2.4 0 .7.4.7 1.1 1.4 1.8 1.8.2.1.4.1.6-.1l.7-.8c.2-.2.4-.2.7-.1l1.6.8c.3.1.4.3.4.5 0 .3-.2 1.1-.7 1.5-.5.5-1.2.7-1.9.6-1-.1-2.2-.6-3.6-1.8-1.2-1.1-2-2.4-2.2-3.4-.2-1 .1-1.9.6-2.4Z"/></svg>WhatsApp</a>
       </div>
     </article>
   </div>
@@ -506,102 +580,159 @@ html,body,*{cursor:none!important}
 <div class="modal" id="modal" role="dialog" aria-modal="true"><div class="sheet" id="sheet"></div></div>
 
 <script>
-const AI_RULES = [
-  "Teams will have to replicate an existing website.",
-  "The website will be announced on the spot.",
-  "Participating teams cannot look at or copy the real code of the example website. You must build it by describing it to the AI.",
-  "Total time allotted to participants will be 2 hours.",
-  "Participants can use any beginner-friendly, visual AI web creators. We recommend v0.dev or Bolt.new.",
-  "ChatGPT, Claude and / or Gemini can be used to write text, paragraphs, or simple code blocks.",
-  "Canva AI is allowed for creating cool images to use on your site.",
-  "DO NOT copy code from websites on Google.",
-  "Every team gets 2 minutes to show their website to the judges."
-];
-const AI_MISSION = "Your goal is to build a website that looks just like the example website we show you at the start of the event. You will act as the “Project Manager,” and Artificial Intelligence (AI) will do the coding for you!";
-const AI_CRIT = [["The “Twins” Test — how closely does your site look like the original? (colors, fonts, pictures)",10],["Prompt Master — show the judges 3 clever prompts you used to get the AI to help you",5],["Working — do buttons change color on hover? Do links go to the right places?",5]];
-
 const EVENTS = [
  { id:"tech-news", name:"Tech News Anchor", tag:"“Tech Today Live!”", color:"#4de1ff",
    classes:"III–IV", team:"2–3 students", venue:"Auditorium", floor:"", medium:"English", group:"Junior",
    mission:"Step into the shoes of a futuristic news anchor and bring a technology-themed news story to life with confidence, creativity, and imagination!",
-   rules:[
-    "Each team will take on the role of a futuristic television news team.",
-    "Teams may choose a fictional channel name such as Tech Today Live, Future News 2050, Digital Times, etc.",
-    "The news report must be based on a technology-themed scenario — fictional but believable.",
-    "Present the report in the style of a professional television news broadcast, with a clear headline, news story and relevant details.",
-    "Teams may use Microsoft PowerPoint or CANVA to create supporting visuals; background visuals, headlines, images and graphics may be used.",
-    "All participants should have a meaningful role in the presentation.",
-    "The presentation must be in English. Each team gets 3 minutes — marks are deducted for exceeding the time limit.",
-    "Teams should demonstrate creativity, confidence, communication skills and effective use of technology.",
-    "Content must be original and age-appropriate.",
-    "Carry a pen drive containing the required background visuals for AV support."],
+   ruleGroups:[
+    {title:"Story & News Format",rules:[
+     "Each team will take on the role of a futuristic television news team.",
+     "Teams may choose a fictional channel name such as Tech Today Live, Future News 2050, Digital Times, etc.",
+     "The news report must be based on a technology-themed scenario — fictional but believable.",
+     "Participants should present their report in the style of a professional television news broadcast.",
+     "The presentation should include a clear headline, news story and relevant details."]},
+    {title:"Presentation & Teamwork",rules:[
+     "All participants should have a meaningful role in the presentation.",
+     "The presentation should be conducted in English. Each team will get 3 minutes for the presentation. Marks will be deducted for exceeding the time limit.",
+     "Teams should demonstrate creativity, confidence, communication skills and effective use of technology."]},
+    {title:"Visuals & Content",rules:[
+     "Teams may use Microsoft PowerPoint or CANVA to create supporting visuals; background visuals, headlines, images and graphics may be used to make the news report engaging.",
+     "Participants should ensure that their content is original and age-appropriate.",
+     "Participants must carry a pen drive containing the required background visuals for AV support."]}],
    crit:[["Content, Creativity & Imagination",5],["Confidence & Communication",5],["Use of Visuals / Technology",5],["Team Coordination & Overall Impact",5]],
    contacts:[["Ms Megha Arora","8860303503"],["Ms Dipanshi","8700225485"]] },
 
  { id:"smart-heritage", name:"Smart Heritage, Smarter Future", tag:"Digital poster in CANVA", color:"#ff9f43",
    classes:"V–VI", team:"2 students", venue:"Primary Computer Lab", floor:"First Floor", medium:"English", group:"Junior",
-   mission:"Design a vibrant DIGITAL POSTER using CANVA showing how modern technology and Artificial Intelligence (AI) can help preserve, protect, and promote India’s rich cultural heritage — a perfect harmony between tradition and innovation. Step into the shoes of a Digital Heritage Designer!",
-   rules:[
-    "The poster should visually showcase a futuristic, technology-driven solution that supports a smart and sustainable future for Indian art, monuments, languages, or traditions.",
-    "Total time allotted: 1 hour.",
-    "Participants must use CANVA, utilising layout tools and copyright-free assets. CANVA AI features (Magic Media / Magic Design) are permitted.",
-    "All elements — icons, graphics, imagery and text — must be copyright-free and age-appropriate.",
-    "Both team members must actively contribute to the design process and concept development.",
-    "The content, slogan and text on the poster must be written entirely in English.",
-    "Teams are evaluated on creativity, concept development, visual aesthetics, effective tool usage, and the harmony between tradition and technology."],
+   mission:"Students will work in teams to design a vibrant DIGITAL POSTER using CANVA. The poster should showcase how modern technology and Artificial Intelligence (AI) can help preserve, protect, and promote India’s rich cultural heritage — illustrating a perfect harmony between tradition and innovation.",
+   ruleGroups:[
+    {title:"Theme & Concept",rules:[
+     "Step into the shoes of a Digital Heritage Designer! Teams will blend rich Indian traditions with modern AI technology to craft an inspiring digital poster.",
+     "The poster should visually showcase a futuristic, technology-driven solution that supports a smart and sustainable future for Indian art, monuments, languages, or traditions."]},
+    {title:"Design & Tools",rules:[
+     "Participants must use CANVA to design their poster, utilizing layout tools, copyright-free assets. Use of CANVA AI features (Magic Media/Magic Design) is permitted.",
+     "All elements used in the design — including icons, graphics, imagery, and text — must be copyright-free and age-appropriate.",
+     "Teams will be evaluated on creativity, concept development, visual aesthetics, effective tool usage, and the harmony between tradition and technology."]},
+    {title:"Team, Time & Language",rules:[
+     "Total time allotted to participants will be 1 hour.",
+     "Both team members must actively contribute to the design process and concept development.",
+     "The content, slogan, and text elements on the digital poster must be written entirely in English."]}],
    crit:[["Relevance to Theme",5],["Visual Appeal & Creativity",5],["Use of CANVA features",5],["Originality & Slogan Impact",5]],
    contacts:[["Ms Sugeet Malhotra","9899229895"]] },
 
  { id:"web-blueprint", name:"Web Blueprint", tag:"Replicating a website using AI", color:"#a06bff",
    classes:"VI–VIII", team:"2 students", venue:"Middle Computer Lab", floor:"Second Floor", medium:"Offline", group:"Middle",
-   mission:AI_MISSION, rules:AI_RULES, crit:AI_CRIT,
+   mission:"Your goal is to build a website that looks just like the example website we show you at the start of the event. You will act as the “Project Manager,” and Artificial Intelligence (AI) will do the coding for you!",
+   ruleGroups:[
+    {title:"Challenge & Time",rules:[
+     "Teams will have to replicate an existing website.",
+     "The website will be announced on the spot.",
+     "Total time allotted to participants will be 2 hours."]},
+    {title:"Allowed AI Tools",rules:[
+     "Participants can use any beginner-friendly, visual AI web creators. We recommend v0.dev or Bolt.new.",
+     "ChatGPT, Claude and / or Gemini can be used to write text, paragraphs, or simple code blocks.",
+     "Canva AI is allowed for creating cool images to use on your site."]},
+    {title:"Originality & Presentation",rules:[
+     "Participating teams cannot look at or copy the real code of the example website. You must build it by describing it to the AI.",
+     "DO NOT copy code from websites on Google.",
+     "Every team gets 2 minutes to show their website to the judges."]}],
+   crit:[["The “Twins” Test (How closely does site match original?)",10],["Prompt Master (3 clever prompts shown to judges)",5],["Working (Hover colors, functional links)",5]],
    contacts:[["Ms Bhawna Garg","7982348386"]] },
 
- { id:"lens-legends", name:"Lens Legends", tag:"Photography & visual storytelling", color:"#ff5c8a",
-   classes:"VIII–X", team:"2 students", venue:"Junior Library", floor:"Third Floor", medium:"Offline", group:"Middle",
-   tba:true,
-   contacts:[["Mr AVL Raghavendra",""],["Mr Ankush Sharma",""]] },
+ { id:"lens-legends", name:"Lens Legends", tag:"Hidden Geometry", color:"#ff5c8a",
+   classes:"VIII–X", team:"1–2 students", venue:"Junior Library", floor:"Third Floor", medium:"Offline", group:"Middle",
+   mission:"Hidden Geometry challenges participants to discover the geometric patterns, shapes, lines, symmetry and structure hidden in everyday surroundings. Participants must transform ordinary spaces and objects into visually striking photographs through creative observation and composition. The challenge is to find geometry where others simply see the ordinary.",
+   ruleGroups:[
+    {title:"Participation & Capture",rules:[
+     "Participation: As an individual or a team of two.",
+     "The time limit to submit the final photograph will be 1 hr 30 mins.",
+     "Participants must capture one photograph based on the theme — Hidden Geometry.",
+     "The photograph must be taken during the competition period at the designated venue.",
+     "Participants may use a mobile phone or digital camera.",
+     "The photograph should creatively highlight lines, shapes, patterns, symmetry, perspective, repetition or geometric structures."]},
+    {title:"Editing & Submission",rules:[
+     "Basic editing such as cropping, brightness, contrast and exposure adjustment is permitted.",
+     "AI-generated images, downloaded images and major digital manipulation are not permitted.",
+     "The photograph must be submitted within the given time limit."]},
+    {title:"Equipment & Decisions",rules:[
+     "Participants must carry their own equipment and devices for the event. The host school will not be providing anything for clicking pictures or for transferring the images or any editing software.",
+     "Judges' decision will be final and binding."]}],
+   crit:[["Use of Geometry",5],["Composition & Framing",5],["Technical Quality",5],["Visual Impact",5]],
+   contacts:[["Mr AVL Raghavendra","9654182010"],["Mr Ankush Sharma","9999067854"]] },
 
- { id:"atl-event", name:"ATL Event", tag:"Atal Tinkering Lab challenge", color:"#7dff9b",
-   classes:"VI–XII", team:"2 students", venue:"ATL Room", floor:"Ground Floor", medium:"Offline", group:"All",
-   tba:true,
-   contacts:[["Ms Archana Bindal",""],["Ms Bhavika Attri",""]] },
+ { id:"fastest-line-follower", name:"Fastest Line Follower", tag:"Build it. Tune it. Race it!", color:"#7dff9b",
+   classes:"VI–X", team:"2 students", venue:"ATL Room", floor:"Ground Floor", medium:"Offline", group:"Middle",
+   mission:"Build an autonomous robot that follows a line track from START to FINISH in the shortest time. The robot must run on its own, with no remote control and no human help once the run begins.",
+   ruleGroups:[
+    {title:"Robot Build & Specifications",rules:[
+     "The robot must be autonomous: once started, it must follow the line without any human input. The line can be circular or rectangular.",
+     "The robot must fit inside a box of 20 cm × 20 cm × 20 cm at all times, including at the start of each run. Its size may not change during a run.",
+     "Maximum allowed weight of the robot is 1.5 kg including the battery, with a 5% tolerance.",
+     "The robot must be able to move forward and turn left and right. It must also be able to stop on its own at the finish line.",
+     "Ready-made or pre-assembled robot kits are not allowed. The design, assembly, and programming must be mainly the team's own work. Any robotic parts, sensors, and building materials may be used.",
+     "Batteries must be sealed and leak-proof: Li-ion, Li-Po, NiMH, NiCd, gel cell, or dry cells. They must be firmly fixed to the robot, with no loose wires or exposed connections.",
+     "The voltage anywhere in the robot must not exceed 12.6 V DC at any time.",
+     "No wireless communication for operating the robot is allowed."]},
+    {title:"Safety & Track",rules:[
+     "Sharp edges, open blades, flames, liquids, and anything that could harm people or the track are strictly prohibited. Judges may disqualify any robot they consider unsafe.",
+     "The robot must not interfere with other robots (IR, magnetic, or any other kind), and must not damage or alter the track in any way. If a team believes another robot affected its run, it must show proof, and the Referee will confirm it. The Referee decides any interference claim.",
+     "Track: white (or light) matte surface with a black line about 2–3 cm wide. It may include curves, sharp turns, and intersections or gaps. The layout will be announced on the spot."]},
+    {title:"Race Procedure",rules:[
+     "Each team gets 2 attempts, and the best time counts.",
+     "The timer starts when the robot crosses the start line and stops when it crosses the finish line.",
+     "Teams place the robot at the START line, and then the Referee gives the signal. After that, the team may not touch the robot.",
+     "If the robot leaves the line completely for more than 3 seconds, the attempt ends. If a team touches or restarts the robot mid-run, the attempt ends.",
+     "Every robot goes through a size, weight, and voltage check before its first run."]},
+    {title:"Scoring & Decisions",rules:[
+     "Tie-breaker: The team with the better second-best time wins.",
+      "The Referee's and judges' decisions are final and binding on all teams."]},
+    {title:"Penalties",rules:[
+     "Disqualification: Unsafe robot or rule violation.",
+     "Warning, then disqualification: Damaging the track.",
+     "Attempt ends: Touching the robot during a run."]}],
+   crit:[["Speed (Fastest Time — proportional scoring)",5],["Line Following Accuracy",5],["Finish & Stop (at finish line)",5],["Design & Build Quality (wiring, sturdy body, originality)",5]],
+   contacts:[["Ms Archana Bindal","9818303048"]] },
 
- { id:"ctrl-create", name:"Ctrl + Create", tag:"Your challenge. Your ideas. Your creation.", color:"#ffd84d",
+ { id:"ctrl-create", name:"Ctrl + Create", tag:"Your Challenge. Your Ideas. Your Creation", color:"#ffd84d",
    classes:"IX–X", team:"2 students", venue:"Senior Library", floor:"First Floor", medium:"English", group:"Senior",
-   mission:"A real-world challenge is waiting for you! Think smart, design creatively, and build an AI-powered solution that truly helps your target audience. Turn your idea into a powerful website and app prototype using CANVA — all within the given time.",
-   rules:[
-    "The specific theme, problem statement, and target audience will be revealed to all teams at the beginning of the competition.",
-    "Teams have 60 minutes to develop a one-page scrolling website and 3–5 UI/app screens using CANVA.",
-    "The proposed AI-based solution must address the assigned problem and show how it benefits the identified stakeholders.",
-    "Prototypes must be created exclusively in CANVA. CANVA’s built-in AI tools (Magic Write, Magic Media) may be used.",
-    "External generative AI tools — including ChatGPT, Gemini and Midjourney — are strictly prohibited.",
-    "Submit a view-only CANVA link to the completed design at the end of the 60-minute development period.",
-    "Each team then gets 5 minutes to present its problem statement, solution, website and app screens to the judges, explaining how the solution addresses the target audience’s needs.",
-    "Bring your own laptop, charger, and a device for internet connectivity."],
+   mission:"A real-world challenge is waiting for you! Think smart, design creatively, and build an AI-powered solution that truly helps your target audience. Your mission is to turn your idea into a powerful website and app prototype using CANVA — all within the given time.",
+   ruleGroups:[
+    {title:"Challenge & Deliverables",rules:[
+     "The specific theme, problem statement, and target audience will be revealed to all teams at the beginning of the competition.",
+     "Teams will have 60 minutes to develop a one-page scrolling website and 3–5 UI/app screens using CANVA.",
+     "The proposed AI-based solution must address the assigned problem and demonstrate how it benefits the identified stakeholders."]},
+    {title:"Tools & Restrictions",rules:[
+     "Participants must create their prototypes exclusively using CANVA. CANVA’s built-in AI tools, such as Magic Write and Magic Media, may be used to enhance their designs.",
+     "External generative AI tools, including ChatGPT, Gemini, and Midjourney, are strictly prohibited."]},
+    {title:"Submission, Presentation & Equipment",rules:[
+     "Teams must submit a view-only CANVA link to their completed design at the end of the 60-minute development period.",
+     "Following submission, each team will receive 5 minutes to present its problem statement, proposed solution, website, and app screens to the judges. Teams should explain how their solution addresses the needs of the target audience.",
+     "Participants are kindly requested to bring their own laptop, charger, and a device for internet connectivity to ensure a smooth and uninterrupted experience during the competition."]}],
    crit:[["Problem-Solving & Solution Effectiveness",5],["Theme & Stakeholder Alignment",5],["UI/UX Design & Creativity",5],["Presentation",5]],
    contacts:[["Ms Shilpi Chauhan Malik","7027127170"]], students:["Ryan Sindhi","Medha Gupta"] },
 
  { id:"zero-day", name:"Zero Day: Operation Breach", tag:"Capture The Flag (CTF)", color:"#ff4d4d",
    classes:"XI–XII", team:"2 students", venue:"Senior Computer Lab", floor:"Second Floor", medium:"—", group:"Senior",
-   mission:"Solve a Jeopardy-style CTF by uncovering hidden flags and progressing through three increasingly difficult levels. Act as a cybersecurity operative, using logic and investigation skills to find the flag and complete the mission.",
-   rules:[
-    "Solve the given challenges to discover flags, and submit them on the designated CTF platform for points.",
-    "Challenges may involve cryptography, encoding, web investigation, steganography, digital forensics, OSINT, and logical problem-solving.",
-    "Hints may be provided for selected challenges. Hint usage may carry a point penalty, as specified on the challenge.",
-    "Any attempt to disrupt the competition infrastructure, access unauthorised systems, or interfere with other participants results in disqualification.",
-    "Bring your own devices and ensure reliable internet access for the whole event.",
-    "The competition runs for 90 minutes across three levels of progressively harder cybersecurity puzzles.",
-    "Join the Discord server for announcements, support and organiser communication: https://discord.gg/KZhYzUPYmM"],
+   mission:"Your goal is to solve a Jeopardy-style CTF by uncovering hidden flags, and progressing through three increasingly difficult levels. You will act as a cybersecurity operative, using logic and investigation skills to find the flag and complete the mission.",
+   ruleGroups:[
+    {title:"Challenges & Scoring",rules:[
+     "Participants must solve given challenges to discover flags, which must be submitted on the designated CTF platform for points.",
+     "Challenges may involve cryptography, encoding, web investigation, steganography, digital forensics, OSINT, and logical problem-solving.",
+     "Hints may be provided for selected challenges. Hint usage may carry a point penalty, as specified on the challenge.",
+     "The competition will be conducted for 90 minutes and will consist of three levels of progressively challenging cybersecurity puzzles."]},
+    {title:"Conduct, Equipment & Communication",rules:[
+     "Any attempt to disrupt the competition infrastructure, access unauthorised systems, or interfere with other participants will result in disqualification.",
+     "Participants must bring their own devices and ensure access to a reliable internet connection for the duration of the event.",
+     "Join the Discord server for announcements, support, and organiser communication: https://discord.gg/KZhYzUPYmM"]}],
    crit:[["Difficulty of challenges completed",10],["Time taken to complete levels",5],["Number of flags discovered",5]],
    contacts:[["Ms Ruchi Gupta","9582486131"]], students:["Manan Agarwal","Aahana Chawla"] }
 ];
 
 const GENERAL = [
  "Technovanza 12.0, an Inter-School Computer Festival, has SEVEN events in total. All events are held offline. Registrations are invited for all of them.",
- "A common registration form covers all events and should be filled ONLY ONCE by the school. The link is also on the school website: <a href='https://bbpsgr.balbharati.org' target='_blank' rel='noopener'>bbpsgr.balbharati.org</a>.",
+ "A common registration form covers all events and should be filled ONLY ONCE by the school. Online Form: <a href='https://forms.gle/q3xySiwbtn3Go7G38' target='_blank' rel='noopener' style='color:var(--accent);text-decoration:underline'>Click Here to Register</a> (also available on <a href='https://bbpsgr.balbharati.org' target='_blank' rel='noopener'>bbpsgr.balbharati.org</a>).",
  "Only ONE TEAM per school may register for each event.",
- "LAST DATE TO REGISTER IS 31 OCTOBER 2026.",
+ "LAST DATE TO REGISTER IS <b style='color:var(--hot)'>31 OCTOBER 2026</b>.",
  "A student can participate in ONLY ONE event, as the events are held simultaneously.",
  "Registrations are first-come, first-served. On-the-spot registrations are not possible due to paucity of space.",
  "REPORTING TIME for schools on the day of the event is 8:00 AM.",
@@ -702,6 +833,10 @@ let cur=0;
 function openEv(i){
   cur=i;const ev=EVENTS[i];
   const tel=p=>p?`<a href="tel:${p}">${p}</a>`:'';
+  const renderRule=r=>`<li>${r.replace(/(https?:\/\/\S+)/g,'<a href="$1" target="_blank" rel="noopener" style="color:var(--c)">$1</a>')}</li>`;
+  const guidelines=ev.ruleGroups
+    ?`<div class="rule-groups">${ev.ruleGroups.map(group=>`<div class="rule-group"><h5>${group.title}</h5><ul>${group.rules.map(renderRule).join('')}</ul></div>`).join('')}</div>`
+    :`<ul>${ev.rules.map(renderRule).join('')}</ul>`;
   $('#sheet').style.setProperty('--c',ev.color);
   $('#sheet').innerHTML=`
    <button class="close" aria-label="Close">✕</button>
@@ -715,8 +850,8 @@ function openEv(i){
      ${ev.medium!=='—'?`<div><dt>Medium</dt><dd>${ev.medium}</dd></div>`:''}
    </dl>
    ${ev.tba?`<div class="notice">Detailed rules and judging criteria for this event will be announced soon. The general guidelines below the events list apply meanwhile.</div>`:`
-   <h4>The Big Mission</h4><p class="mission">${ev.mission}</p>
-   <h4>Guidelines</h4><ul>${ev.rules.map(r=>`<li>${r.replace(/(https?:\/\/\S+)/g,'<a href="$1" target="_blank" rel="noopener" style="color:var(--c)">$1</a>')}</li>`).join('')}</ul>
+  <h4>The Big Mission</h4><p class="mission">${ev.mission}</p>
+  <h4>Guidelines</h4>${guidelines}
    <h4>Judging criteria</h4><div class="crit">${ev.crit.map(([n,m])=>`<div><span>${n}</span><b>${m}</b><div class="bar"><i style="width:${m/ev.crit.reduce((a,c)=>a+c[1],0)*100}%"></i></div></div>`).join('')}</div>
    <p class="mono" style="margin-top:10px">Total: ${ev.crit.reduce((a,c)=>a+c[1],0)} marks</p>`}
    <h4>Contact</h4>
@@ -750,6 +885,26 @@ addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft')openEv((cur+6)%7);
 });
 
+const contactDialog=$('#contact'),contactClose=$('.contact-close'),contactLink=$('nav a[href="#contact"]');
+let contactWasOpen=location.hash==='#contact';
+function syncContactFocus(){
+  const isOpen=location.hash==='#contact';
+  if(isOpen&&!contactWasOpen)setTimeout(()=>contactClose.focus(),60);
+  else if(!isOpen&&contactWasOpen)(mobileView.matches?navToggle:contactLink).focus();
+  contactWasOpen=isOpen;
+}
+if(contactWasOpen)setTimeout(()=>contactClose.focus(),60);
+addEventListener('hashchange',syncContactFocus);
+addEventListener('keydown',e=>{
+  if(location.hash!=='#contact')return;
+  if(e.key==='Escape'){e.preventDefault();contactClose.click();return}
+  if(e.key!=='Tab')return;
+  const focusables=[...contactDialog.querySelectorAll('a[href],button:not([disabled])')];
+  const first=focusables[0],last=focusables[focusables.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+});
+
 renderFilters();renderGrid();
 
 // reveal + counters
@@ -758,6 +913,30 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.targ
 document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 // ── nav glass on scroll ───────────────────────────────────────────
 const navEl=document.querySelector('nav');
+const navToggle=$('.menu-toggle'),navLinks=$('#primary-navigation'),navBackdrop=$('#mobileNavBackdrop');
+const mobileView=matchMedia('(max-width:760px)');
+function setMobileMenu(open,restoreFocus=false){
+  navEl.classList.toggle('menu-open',open);
+  navToggle.setAttribute('aria-expanded',String(open));
+  navToggle.setAttribute('aria-label',open?'Close navigation menu':'Open navigation menu');
+  navBackdrop.classList.toggle('open',open);
+  navBackdrop.disabled=!open;
+  if(open)setTimeout(()=>{if(navEl.classList.contains('menu-open'))navLinks.querySelector('a')?.focus()},60);
+  else if(restoreFocus&&mobileView.matches)navToggle.focus();
+}
+navToggle.addEventListener('click',()=>setMobileMenu(navToggle.getAttribute('aria-expanded')!=='true'));
+navBackdrop.addEventListener('click',()=>setMobileMenu(false,true));
+navLinks.addEventListener('click',e=>{if(e.target.closest('a'))setMobileMenu(false,true)});
+navEl.addEventListener('keydown',e=>{
+  if(!navEl.classList.contains('menu-open'))return;
+  if(e.key==='Escape'){e.preventDefault();setMobileMenu(false,true);return}
+  if(e.key!=='Tab')return;
+  const focusables=[navToggle,...navLinks.querySelectorAll('a')];
+  const first=focusables[0],last=focusables[focusables.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+});
+mobileView.addEventListener('change',e=>{if(!e.matches)setMobileMenu(false)});
 function updateNav(){navEl.classList.toggle('scrolled',scrollY>60)}
 updateNav();
 addEventListener('scroll',()=>{

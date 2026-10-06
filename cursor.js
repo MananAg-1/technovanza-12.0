@@ -3,12 +3,18 @@
    No canvas, no WebGL. Pure CSS transforms (GPU composite layer).
    Two elements:
      .cur-dot   — 6 px solid dot, snaps instantly to pointer
-     .cur-ring  — 40 px ring, lags behind with spring lerp
+     .cur-ring  — 38 px ring, lags behind with spring lerp
    On link hover  → ring expands + fills, dot hides
    On click       → ring punches in then bounces out
    ===================================================================== */
 
 (function () {
+  'use strict';
+
+  // Skip on touch devices
+  if (window.matchMedia && window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+    return;
+  }
 
   /* ── elements ──────────────────────────────────────────────────── */
   var dot  = document.createElement("div");
@@ -23,12 +29,10 @@
   var mx = -200, my = -200;   /* mouse (screen px)  */
   var rx = -200, ry = -200;   /* ring position      */
   var visible   = false;
-  var hovering  = false;
-  var clicking  = false;
   var rafId     = null;
 
   /* ── spring constants ──────────────────────────────────────────── */
-  var EASE = 0.13;            /* ring follow speed (lower = more lag) */
+  var EASE = 0.14;            /* ring follow speed */
 
   /* ── helpers ───────────────────────────────────────────────────── */
   function move(el, x, y) {
@@ -37,9 +41,8 @@
 
   function setHover(target) {
     if (!(target instanceof Element)) return;
-    var isLink = target.closest("a,button,[role='button']");
-    var isText = target.closest("input,textarea,[contenteditable='true']");
-    hovering = !!(isLink || isText);
+    var isLink = target.closest("a, button, [role='button'], .card, input[type='submit']");
+    var isText = target.closest("input, textarea, [contenteditable='true']");
     ring.classList.toggle("cur-ring--hover", !!isLink);
     ring.classList.toggle("cur-ring--text",  !!isText);
     dot.classList.toggle("cur-dot--hidden",  !!isLink || !!isText);
@@ -68,9 +71,9 @@
       ring.classList.add("cur-ring--visible");
       visible = true;
     }
-  });
+  }, { passive: true });
 
-  document.addEventListener("mouseover", function (e) { setHover(e.target); });
+  document.addEventListener("mouseover", function (e) { setHover(e.target); }, { passive: true });
 
   document.addEventListener("mousedown", function () {
     ring.classList.add("cur-ring--click");
